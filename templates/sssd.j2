@@ -1,0 +1,26 @@
+[sssd]
+config_file_version = 2
+domains = {{ domain }}
+services = pam,ssh
+
+[domain/{{ domain }}]
+id_provider = ldap
+auth_provider = ldap
+ldap_uri = {{ ldap_protocol }}://{{ ldap_host }}.{{ domain }}
+
+{% if ldap_tls %}
+ldap_id_use_start_tls = true 
+ldap_tls_reqcert = demand
+ldap_tls_cacert = /etc/ssl/certs/{{ ldap_host }}.pem
+
+{% else %}
+ldap_id_use_start_tls = false
+ldap_tls_reqcert = never
+ldap_auth_disable_tls_never_use_in_production = true
+{% endif %}              
+
+cache_credentials = true
+ldap_search_base = {{ ldap_searchbase }}
+ldap_sudo_search_base = ou=Sudo,{{ ldap_searchbase }}
+
+auto_private_groups = true

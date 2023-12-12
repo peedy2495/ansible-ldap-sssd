@@ -1,0 +1,11 @@
+ldap_protocol: ldap
+ldap_host: ldap
+ldap_host_ip: 192.168.123.180
+set_hosts: true
+ldap_tls: true
+ldap_searchbase: dc=example,dc=org
+ldap_schema: rfc2307bis
+usernames_case_sensitive: True
+
+domain: example.org
+install_ldapscripts: True
