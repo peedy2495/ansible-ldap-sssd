@@ -9,3 +9,6 @@ usernames_case_sensitive: True
 
 domain: example.org
 install_ldapscripts: True
+
+# This will allays remove user keyrings by using google chrome browser, because of erros popus on password changes
+using_chrome: True

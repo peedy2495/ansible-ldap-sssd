@@ -67,6 +67,15 @@
         echo -n 'yes' >~/.config/gnome-initial-setup-done
       fi
 
+- name: always remove user keyrings
+  blockinfile:
+    path: /etc/profile
+    insertafter: EOF
+    marker: "## {mark} - remove keyring"
+    block: |
+      rm -rf ~/.local/share/keyrings
+  when: using_chrome
+
 - name: add LDAP based ssh key infrastructure
   import_tasks: ssh.yml
   tags:

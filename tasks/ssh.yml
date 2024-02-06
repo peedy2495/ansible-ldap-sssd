@@ -21,7 +21,7 @@
       service:
         name: sshd
         state: restarted
-      notify: clear caches
+      #notify: clear caches
   tags:
     - ldap-ssh
 
