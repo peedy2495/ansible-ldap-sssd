@@ -66,7 +66,7 @@
                 ldapmodify -x -D "cn=admin,$dn" -H ldap://$ldapIP -W <<LDIF
       dn: uid=$USER,ou=People,$dn
       changetype: modify
-      ansible.builtin.replace: sshPublicKey
+      replace: sshPublicKey
       sshPublicKey: $pubKey
       LDIF
               else
