@@ -1,5 +1,5 @@
 - name: install required packages
-  apt:
+  ansible.builtin.apt:
     pkg:
       - sssd-ldap
       - ldap-utils
@@ -12,7 +12,7 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: install required packages
-  apt:
+  ansible.builtin.apt:
     pkg:
       - ldapscripts
     state: present
@@ -20,7 +20,7 @@
   when: ansible_distribution == "Ubuntu" and install_ldapscripts|bool
 
 - name: set local name resolution
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     line: '{{ ldap_host_ip }} {{ ldap_host }} {{ ldap_host }}.{{ domain }}'
   when: set_hosts
@@ -28,9 +28,9 @@
 - name: import certs
   block:
   - name: grab cert from server
-    shell: openssl s_client -showcerts -connect {{ ldap_host }}.{{ domain }}:636 </dev/null 2>/dev/null|openssl x509 -outform PEM > /etc/ssl/certs/{{ ldap_host }}.pem
+    ansible.builtin.shell: openssl s_client -showcerts -connect {{ ldap_host }}.{{ domain }}:636 </dev/null 2>/dev/null|openssl x509 -outform PEM > /etc/ssl/certs/{{ ldap_host }}.pem
   - name: place cert-file with explicit permissions
-    file:
+    ansible.builtin.file:
       path: /etc/ssl/certs/{{ ldap_host }}.pem
       owner: root
       group: root
@@ -38,7 +38,7 @@
   when: ldap_tls
 
 - name: seed sssd config
-  template:
+  ansible.builtin.template:
     src: sssd.j2
     dest: /etc/sssd/sssd.conf
     owner: root
@@ -47,15 +47,15 @@
     force: true
 
 - name: pam - autocreate homedirs
-  shell: pam-auth-update --enable mkhomedir
+  ansible.builtin.shell: pam-auth-update --enable mkhomedir
 
 - name: restart sssd daemon with new config
-  systemd:
+  ansible.builtin.systemd:
     name: sssd.service
     state: restarted
 
 - name: prevent gnome user environment initialization
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/profile.d/disable-gnome-userinit.sh
     create: true
     mode: '0644'
@@ -68,7 +68,7 @@
       fi
 
 - name: always remove user keyrings
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/profile
     insertafter: EOF
     marker: "## {mark} - remove keyring"
@@ -77,6 +77,6 @@
   when: using_chrome
 
 - name: add LDAP based ssh key infrastructure
-  import_tasks: ssh.yml
+  ansible.builtin.import_tasks: ssh.yml
   tags:
     - ldap-ssh
