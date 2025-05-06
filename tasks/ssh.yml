@@ -1,6 +1,6 @@
 - name: allow ssh-logins via sssd
   block:
-    - name: sshd - configure sssd 
+    - name: sshd - configure ssh service 
       # use item.first[true/yes] boolean with care due to security issues in case of appended lines!
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
@@ -16,11 +16,10 @@
         - key: "AuthorizedKeysCommandUser"
           value: "root"
           first: "no"
-
-    - name: restarting sshd
+    - name: sshd- restarting ssh service
       ansible.builtin.service:
-        name: sshd
-        state: restarted
+      name: "{{ 'ssh' if ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] | version_compare('24.04', '>=') else 'sshd' }}"
+      state: restarted
       #notify: clear caches
   tags:
     - ldap-ssh
