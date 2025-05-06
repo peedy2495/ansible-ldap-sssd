@@ -1,26 +1,28 @@
-- name: allow ssh-logins via sssd
-  block:
-    - name: sshd - configure ssh service 
-      # use item.first[true/yes] boolean with care due to security issues in case of appended lines!
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        firstmatch: "{{ item.first }}"
-        regexp: '(^|^#){{ item.key }}\ '
-        line: "{{ item.key }} {{ item.value }}"
-        backup: true
-        state: present
-      with_items:
-        - key: "AuthorizedKeysCommand"
-          value: "/usr/bin/sss_ssh_authorizedkeys"
-          first: "no"
-        - key: "AuthorizedKeysCommandUser"
-          value: "root"
-          first: "no"
-    - name: sshd - restarting ssh service
-      ansible.builtin.service:
-        name: ssh
-        state: restarted
-      #notify: clear caches
+
+- name: sshd - configure ssh service 
+  # use item.first[true/yes] boolean with care due to security issues in case of appended lines!
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    firstmatch: "{{ item.first }}"
+    regexp: '(^|^#){{ item.key }}\ '
+    line: "{{ item.key }} {{ item.value }}"
+    backup: true
+    state: present
+  with_items:
+    - key: "AuthorizedKeysCommand"
+      value: "/usr/bin/sss_ssh_authorizedkeys"
+      first: "no"
+    - key: "AuthorizedKeysCommandUser"
+      value: "root"
+      first: "no"
+  tags:
+    - ldap-ssh
+
+- name: sshd - restarting ssh service
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  #notify: clear caches
   tags:
     - ldap-ssh
 
