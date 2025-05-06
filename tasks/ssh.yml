@@ -20,7 +20,7 @@
 
 - name: sshd - restarting ssh service
   ansible.builtin.service:
-    name: "{{ 'sshd' if ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_version'] | version_compare('24.04', '<') else 'ssh' }}"
+    name: "{{ 'ssh' if 'ssh.service' in ansible_facts.services else 'sshd' }}"
     state: restarted
   #notify: clear caches
   tags:
