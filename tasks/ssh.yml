@@ -1,4 +1,3 @@
-
 - name: sshd - configure ssh service 
   # use item.first[true/yes] boolean with care due to security issues in case of appended lines!
   ansible.builtin.lineinfile:
@@ -18,9 +17,9 @@
   tags:
     - ldap-ssh
 
-- name: sshd - restarting ssh service
+- name: restarting ssh service
   ansible.builtin.service:
-    name: "{{ 'ssh' if 'ssh.service' in ansible_facts.services else 'sshd' }}"
+    name: "{{ ssh_service_name }}"
     state: restarted
   #notify: clear caches
   tags:

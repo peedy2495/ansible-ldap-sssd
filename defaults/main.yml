@@ -6,6 +6,7 @@ ldap_tls: true
 ldap_searchbase: dc=example,dc=org
 ldap_schema: rfc2307bis
 usernames_case_sensitive: True
+ssh_service_name: sshd
 
 domain: example.org
 install_ldapscripts: True
