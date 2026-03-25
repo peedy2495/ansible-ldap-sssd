@@ -6,7 +6,9 @@ ldap_tls: true
 ldap_searchbase: dc=example,dc=org
 ldap_schema: rfc2307bis
 usernames_case_sensitive: True
-ssh_service_name: sshd
+# Leave empty to auto-detect the SSH service name (`ssh` vs `sshd`).
+# Set this explicitly in inventory/group_vars/host_vars if you want to override it.
+ssh_service_name: ""
 
 domain: example.org
 install_ldapscripts: True

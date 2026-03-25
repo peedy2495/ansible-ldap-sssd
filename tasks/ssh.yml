@@ -17,9 +17,30 @@
   tags:
     - ldap-ssh
 
+- name: gather service facts for ssh service detection
+  ansible.builtin.service_facts:
+  when: ssh_service_name | length == 0
+  tags:
+    - ldap-ssh
+
+- name: resolve ssh service name
+  ansible.builtin.set_fact:
+    ssh_service_name_resolved: >-
+      {{
+        ssh_service_name
+        if ssh_service_name | length > 0
+        else 'ssh'
+        if 'ssh.service' in ansible_facts.services
+        else 'sshd'
+        if 'sshd.service' in ansible_facts.services
+        else 'ssh'
+      }}
+  tags:
+    - ldap-ssh
+
 - name: restarting ssh service
   ansible.builtin.service:
-    name: "{{ ssh_service_name }}"
+    name: "{{ ssh_service_name_resolved }}"
     state: restarted
   #notify: clear caches
   tags:
